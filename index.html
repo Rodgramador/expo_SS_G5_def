@@ -1491,8 +1491,8 @@ function renderProb() {
   document.getElementById('probParamVal').textContent = curProb === 2 ? Math.round(probVal) : probVal.toFixed(2);
   document.getElementById('probStatement').innerHTML = cfg.stmt(probVal);
   document.getElementById('probSummary').textContent = cfg.sum(probVal);
-  const st = cfg.steps(probVal).slice(0, curStep);
-  document.getElementById('probStepsContainer').innerHTML = st.map((s, i) => `<div class="step-card ${i === 3 ? 'final' : ''}">${s}</div>`).join('');
+  const stepsArr = cfg.steps(probVal).slice(0, curStep);
+  document.getElementById('probStepsContainer').innerHTML = stepsArr.map((s, i) => `<div class="step-card ${i === 3 ? 'final' : ''}">${s}</div>`).join('');
   renderMath();
 
   const c = getColors(), pad = { l: 36, r: 12, t: 22, b: 20 };
@@ -1504,17 +1504,17 @@ function renderProb() {
     for (let i = 0; i <= 150; i++) { const w = PI*i/150, m = cfg.evalH(w, probVal).mag; i === 0 ? sm.ctx.moveTo(g.mx(w), g.my(m)) : sm.ctx.lineTo(g.mx(w), g.my(m)); }
     sm.ctx.stroke();
   }
-  const st = prepCanvas('cvProbTime', 175);
-  if (st) {
+  const stPlot = prepCanvas('cvProbTime', 175);
+  if (stPlot) {
     const vals = Array.from({ length: 21 }, (_, n) => cfg.evalSig(n, probVal));
     const yl = Math.max(2, Math.ceil(Math.max(...vals.map(v => Math.max(Math.abs(v.x), Math.abs(v.y)))) * 1.15));
-    const g = drawAxes(st.ctx, pad, st.w, st.h, 0, 20, -yl, yl, [0,5,10,15,20].map(v => ({ v, l: String(v) })), [{ v: -yl, l: (-yl).toFixed(0) }, { v: 0, l: '0' }, { v: yl, l: yl.toFixed(0) }], 'Entrada x[n] (gris) vs. Salida y[n] (turquesa)');
-    st.ctx.strokeStyle = c.axis; st.ctx.setLineDash([4, 3]); st.ctx.beginPath();
-    vals.forEach((v, n) => n === 0 ? st.ctx.moveTo(g.mx(n), g.my(v.x)) : st.ctx.lineTo(g.mx(n), g.my(v.x)));
-    st.ctx.stroke(); st.ctx.setLineDash([]);
-    st.ctx.strokeStyle = c.accent; st.ctx.lineWidth = 2.2; st.ctx.beginPath();
-    vals.forEach((v, n) => n === 0 ? st.ctx.moveTo(g.mx(n), g.my(v.y)) : st.ctx.lineTo(g.mx(n), g.my(v.y)));
-    st.ctx.stroke();
+    const g = drawAxes(stPlot.ctx, pad, stPlot.w, stPlot.h, 0, 20, -yl, yl, [0,5,10,15,20].map(v => ({ v, l: String(v) })), [{ v: -yl, l: (-yl).toFixed(0) }, { v: 0, l: '0' }, { v: yl, l: yl.toFixed(0) }], 'Entrada x[n] (gris) vs. Salida y[n] (turquesa)');
+    stPlot.ctx.strokeStyle = c.axis; stPlot.ctx.setLineDash([4, 3]); stPlot.ctx.beginPath();
+    vals.forEach((v, n) => n === 0 ? stPlot.ctx.moveTo(g.mx(n), g.my(v.x)) : stPlot.ctx.lineTo(g.mx(n), g.my(v.x)));
+    stPlot.ctx.stroke(); stPlot.ctx.setLineDash([]);
+    stPlot.ctx.strokeStyle = c.accent; stPlot.ctx.lineWidth = 2.2; stPlot.ctx.beginPath();
+    vals.forEach((v, n) => n === 0 ? stPlot.ctx.moveTo(g.mx(n), g.my(v.y)) : stPlot.ctx.lineTo(g.mx(n), g.my(v.y)));
+    stPlot.ctx.stroke();
   }
 }
 
